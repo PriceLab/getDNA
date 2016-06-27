@@ -1,0 +1,12 @@
+Package: getDNAClient
+Type: Package
+Title: getDNAClient
+Version: 0.99.0
+Date: 2016-06-24
+Author: Paul Shannon
+Maintainer:  <pshannon@systemsbiology.org>
+Depends: R (>= 3.2.0), Biostrings, RCurl, XML
+Suggests: RUnit
+Description: A service offering (relatively short) DNA sequences, by genone and chromosome location.
+License: GPL
+LazyLoad: yes

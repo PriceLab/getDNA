@@ -1,0 +1,10 @@
+exportClasses(GetDNAClientClass)
+
+export(
+   getDNAClient
+   )
+
+exportMethods(
+    getSequenceByLoc,
+    getSequenceByLocString
+    )
