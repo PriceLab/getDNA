@@ -8,6 +8,7 @@ runTests <- function()
    test_getSequenceByLocParameters()
    test_fromBedFile()
    test_allGenomes()
+   test_getSequencesByLocStrings()
    
 } # runTests    
 #------------------------------------------------------------------------------------------------------------------------
@@ -67,6 +68,31 @@ test_getSequenceByLocParameters <- function()
 
 } # test_getSequenceByLocString
 #------------------------------------------------------------------------------------------------------------------------
+test_getSequencesByLocStrings <- function()
+{
+   printf("--- test_getSequencesByLocStrings")
+
+   file <- system.file(package="getDNAClient", "extdata", "sample.bed")
+   checkTrue(file.exists(file))
+   tbl <- read.table(file, sep="\t", as.is=TRUE, header=TRUE)
+
+   locs <- unlist(lapply(1:6, function(r) sprintf("%s:%d-%d", tbl[r,"chrom"], tbl[r, "chromStart"], tbl[r, "chromEnd"])))
+
+   gdc <- getDNAClient("hg38")
+   seqs <- getSequencesByLocStrings(gdc, locs)
+   checkEquals(seqs, c("CTTACAGT", "TATGGAATGT", "CATTGCTC", "CTCTAGGA", "TGAGTTAAAT", "AATGAGAA"))
+   seqs.rc <- getSequencesByLocStrings(gdc, locs, TRUE)
+   checkEquals(seqs.rc, c("ACTGTAAG", "ACATTCCATA", "GAGCAATG", "TCCTAGAG", "ATTTAACTCA", "TTCTCATT"))
+
+   seqs.mixed <- getSequencesByLocStrings(gdc, locs, c(TRUE, FALSE, TRUE, FALSE, TRUE, FALSE))
+   checkEquals(seqs.mixed, c("ACTGTAAG", "TATGGAATGT", "GAGCAATG", "CTCTAGGA", "ATTTAACTCA", "AATGAGAA"))
+
+   names(locs) <- head(tbl$name)
+   seqs.names <- getSequencesByLocStrings(gdc, locs)
+   checkEquals(names(seqs.names), names(locs))   
+   
+} # test_getSequencesByLocString
+#------------------------------------------------------------------------------------------------------------------------
 test_getSequenceByLoc <- function()
 {
    gdc <- getDNAClient("hg19")
@@ -84,7 +110,6 @@ test_fromBedFile <- function()
     file <- system.file(package="getDNAClient", "extdata", "sample.bed")
     checkTrue(file.exists(file))
     tbl <- read.table(file, sep="\t", as.is=TRUE)
-
 
     colnames(tbl) <- c("chrom", "chromStart", "chromEnd", "name", "score", "strand",
                        "thickStart", "thickEnd", "itemRgb")

@@ -9,6 +9,8 @@ printf <- function(...) print(noquote(sprintf(...)))
 #------------------------------------------------------------------------------------------------------------------------
 setGeneric("getSequenceByLocString", signature="obj", function(obj, locString, reverseComplement=FALSE)
             standardGeneric("getSequenceByLocString"))
+setGeneric("getSequencesByLocStrings", signature="obj", function(obj, locStrings, reverseComplement=FALSE)
+            standardGeneric("getSequencesByLocStrings"))
 setGeneric("getSequenceByLoc", signature="obj", function(obj, chrom, start, end, reverseComplement=FALSE)
             standardGeneric("getSequenceByLoc"))
 #------------------------------------------------------------------------------------------------------------------------
@@ -31,14 +33,27 @@ setMethod("getSequenceByLocString", "GetDNAClientClass",
 
      function(obj, locString, reverseComplement=FALSE){
          s <- gsub(",", "", locString);
-         stopifnot(grepl(":", s))
-         stopifnot(grepl("-", s))
+         stopifnot(all(grepl(":", s)))
+         stopifnot(all(grepl("-", s)))
          tokens <- strsplit(s, ":")[[1]]
          chrom <- tokens[1]
          startEnd.tokens <- strsplit(tokens[2], "-")[[1]]
          start <- as.integer(startEnd.tokens[1])
          end <- as.integer(startEnd.tokens[2])
          getSequenceByLoc(obj, chrom, start, end, reverseComplement)
+         })
+
+#------------------------------------------------------------------------------------------------------------------------
+setMethod("getSequencesByLocStrings", "GetDNAClientClass",
+
+     function(obj, locStrings, reverseComplement=FALSE){
+         if(length(reverseComplement) == 1)
+            reverseComplement <- rep(reverseComplement,length(locStrings))
+         max <- length(locStrings)
+         seqs <- unlist(lapply(1:max, function(i) getSequenceByLocString(obj, locStrings[i], reverseComplement[i])))
+         if(!is.null(names(locStrings)))
+            names(seqs) <- names(locStrings)
+         seqs
          })
 
 #------------------------------------------------------------------------------------------------------------------------

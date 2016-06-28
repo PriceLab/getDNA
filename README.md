@@ -39,6 +39,23 @@ dnaClient <- getDNAClient("hg19")
 seq <- getSequenceByLocString(dnaClient, "chr5:1295260-1295270")
 seq.rc <- getSequenceByLocString(dnaClient, "chr5:1295260-1295270", reverseComplement=TRUE)
 
+
+```
+
+Obtain seqence for regions specified in a bed file:
+
+```
+file <- system.file(package="getDNAClient", "extdata", "sample.bed")  # included with package
+tbl <- read.table(file, sep="\t", as.is=TRUE, header=TRUE)
+locs <- unlist(lapply(1:6, function(r) sprintf("%s:%d-%d", tbl[r,"chrom"], tbl[r, "chromStart"], tbl[r, "chromEnd"])))
+   # give each segment a name if you wish
+names(locs) <- head(tbl$name)
+dnaClient <- getDNAClient("hg38")
+seqs <- getSequencesByLocStrings(dnaClient, locs, reverseComplement=FALSE)
+seqs.rc <- getSequencesByLocStrings(dnaClient, locs, reverseComplement=TRUE)
+
+strand.status.rc <- tbl$strand == "-"    # creates a vector, one entry for each sequence
+seqs.mixed <- getSequencesByLocStrings(dnaClient, locs, reverseComplement=strand.status.rc)
 ```
 
 ## Using the Python 3.x client.  First, install the module (more discussion needed here).
