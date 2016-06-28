@@ -12,9 +12,15 @@ setGeneric("getSequenceByLocString", signature="obj", function(obj, locString, r
 setGeneric("getSequenceByLoc", signature="obj", function(obj, chrom, start, end, reverseComplement=FALSE)
             standardGeneric("getSequenceByLoc"))
 #------------------------------------------------------------------------------------------------------------------------
+DNAClientSupportedGenomes <- function()
+{
+   c("hg16", "hg17", "hg18", "hg19", "hg38", "mm7", "mm8", "mm9", "mm10")
+
+} # DNAClientSupportedGenomes
+#------------------------------------------------------------------------------------------------------------------------
 getDNAClient <- function(genome, quiet=FALSE)
 {
-   stopifnot(genome %in% c("hg18", "hg19", "hg38"))
+   stopifnot(genome %in% DNAClientSupportedGenomes())
 
    url <- "http://genome.ucsc.edu/cgi-bin/das"
    .GetDNAClient(url=url, genome=genome, quiet=quiet)

@@ -9,7 +9,8 @@ class GetDNAClient:
    genome = None
 
    def __init__(self, genome):
-      if(not genome in ["hg18", "hg19", "hg38"]):
+      if(not genome in DNAClientSupportedGenomes()):
+         print("%s is not among the recognized genomes" % genome);
          sys.exit()
       self.genome = genome
       self.baseURL = 'http://genome.ucsc.edu/cgi-bin/das/%s/dna?segment=' % genome
@@ -29,3 +30,8 @@ class GetDNAClient:
      result = "".join(complement.get(base, base) for base in reversed(sequence))
      return(result)
 
+
+def DNAClientSupportedGenomes():
+
+    return(["hg16", "hg17", "hg18", "hg19", "hg38", "mm7", "mm8", "mm9", "mm10"])
+    

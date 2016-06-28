@@ -3,19 +3,21 @@ library(RUnit)
 #------------------------------------------------------------------------------------------------------------------------
 runTests <- function()
 {
-   test_constructor()
+   test_supportedGenomes()
    test_getSequenceByLocString()
    test_getSequenceByLocParameters()
    test_fromBedFile()
+   test_allGenomes()
    
 } # runTests    
 #------------------------------------------------------------------------------------------------------------------------
-test_constructor <- function()
+test_supportedGenomes <- function()
 {
-   printf("--- test_constructor")
-   gdc <- getDNAClient("hg38")
+   printf("--- test_supportedGenomes")
+   checkTrue(all(c("hg18", "hg19", "hg38", "mm8", "mm9", "mm10") %in% DNAClientSupportedGenomes()))   
 
-} # test_constructor
+
+} # test_supportedGenomes
 #------------------------------------------------------------------------------------------------------------------------
 test_getSequenceByLocString <- function()
 {
@@ -104,27 +106,17 @@ test_fromBedFile <- function()
 
 } # test_fromBedFile
 #------------------------------------------------------------------------------------------------------------------------
-test_getSequences.2 <- function()
+test_allGenomes <- function()
 {
-   printf("--- test_getSequences.2")
-   gdc <- getDNAClient("hg19")
-   
-      # transcription start site of the TERT gene
-   tss <- 1295262
-   locs <- list(list(name="foo", chrom="chr5", start=tss-5, end=tss+5, revcomp=FALSE),
-                list(name="bar", chrom="chr5", start=tss-1, end=tss+1, revcomp=FALSE))
+   printf("--- test_allGenomes")
+   locString <- "chr12:57,795,963-57,796,000"
+   for(genome in DNAClientSupportedGenomes()){
+      client <- getDNAClient(genome); 
+      seq <- getSequenceByLocString(client, locString)
+      checkEquals(nchar(seq), 38)
+      }
 
-   locs <- list(foo=list(chrom="chr5", start=tss-5, end=tss+5, revcomp=FALSE),
-                bar=list(name="bar", chrom="chr5", start=tss-1, end=tss+1, revcomp=FALSE))
-
-   seqs <- getDNA(gdc, locs)
-   checkEquals(seqs$foo, "CGGGACGGGGC")
-   checkEquals(seqs$bar, "ACG")
-
-   seq.1.rv <- getDNA(gdc, list(name="bar", chrom="chr5", start=tss-1, end=tss+1, revcomp=FALSE))
-
-
-} # test_getSequences.2
+}  # test_allGenomes
 #------------------------------------------------------------------------------------------------------------------------
 if(!interactive())
    runTests()

@@ -1,8 +1,9 @@
 exportClasses(GetDNAClientClass)
 
 export(
-   getDNAClient
-   )
+    getDNAClient,
+    DNAClientSupportedGenomes
+    )
 
 exportMethods(
     getSequenceByLoc,

@@ -16,5 +16,15 @@ def testReverseComplementSequence():
    assert(client.getSequence("chr5", 1295262, 1295266, True) == 'CCCCG')
    
 #------------------------------------------------------------------------------------------------------------------------
+def testAllGenomes():
+
+   print("--- testSequence")
+   for genome in DNAClientSupportedGenomes(): 
+      client = GetDNAClient(genome)
+      seq = client.getSequence("chr12", 57795963, 57796000)
+      assert(len(seq) == 38)
+   
+#------------------------------------------------------------------------------------------------------------------------
 testSequence()
 testReverseComplementSequence()
+testAllGenomes()
