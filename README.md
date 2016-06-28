@@ -22,7 +22,7 @@ The Python and R clients provided here are simply convenience functions, facilit
 this service from within programs,  stripping off the XML markup, converting to upper case,
 and returning the sequence's reverse complement if requested.
 
-# Using the R client.  First, install the package and its prerequisites (XML, RCurl, Biostrings):
+## Using the R client.  First, install the package and its prerequisites (XML, RCurl, Biostrings):
 
 ```
 source("http://bioconductor.org/biocLite.R")
@@ -38,5 +38,25 @@ library(getDNAClient)
 dnaClient <- getDNAClient("hg19")
 seq <- getSequenceByLocString(dnaClient, "chr5:1295260-1295270")
 seq.rc <- getSequenceByLocString(dnaClient, "chr5:1295260-1295270", reverseComplement=TRUE)
+
+```
+
+## Using the Python 3.x client.  First, install the module (more discussion needed here).
+
+
+```
+from GetDNAClient import *
+print(DNAClientSupportedGenomes())
+
+client = GetDNAClient("hg19")
+
+   # implicit reverseComplement=False
+client.getSequence("chr5", 1295262, 1295266) # CGGGG
+
+   # explicit reverseComplement=False
+client.getSequence("chr5", 1295262, 1295266, False) # CGGGG
+
+   # explicit reverseComplement=True
+client.getSequence("chr5", 1295262, 1295266, True) # CCCCG
 
 ```
