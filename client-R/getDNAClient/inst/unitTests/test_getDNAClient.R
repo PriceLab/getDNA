@@ -109,13 +109,11 @@ test_fromBedFile <- function()
     printf("--- test_fromBedFile")
     file <- system.file(package="getDNAClient", "extdata", "sample.bed")
     checkTrue(file.exists(file))
-    tbl <- read.table(file, sep="\t", as.is=TRUE)
-
-    colnames(tbl) <- c("chrom", "chromStart", "chromEnd", "name", "score", "strand",
-                       "thickStart", "thickEnd", "itemRgb")
+    tbl <- read.table(file, sep="\t", as.is=TRUE, header=TRUE)
 
       # these segments are all 1167 bsaes long - which is more than we need, and makes
       # our results harder to check.  artificially shorten them here
+
     set.seed(31)
     tbl$chromEnd <- tbl$chromStart + as.integer(runif(9, 5, 10))
 
